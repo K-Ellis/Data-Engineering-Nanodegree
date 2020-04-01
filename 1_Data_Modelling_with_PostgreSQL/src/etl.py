@@ -91,6 +91,17 @@ def process_log_file(cur, filepath):
 
 
 def process_data(cur, conn, filepath, func):
+     """Finds every file in the filepath and processes them with the given func.
+    
+    Args:
+        cur (object): the cursor object.
+        conn (object): the connection to the database.
+        filepath (str): the root filepath of the data files.
+        func (function): the processing function.
+    
+    Returns:
+        None
+    """
     # get all files matching extension from directory
     all_files = []
     for root, _, files in os.walk(filepath):
@@ -110,6 +121,11 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
+    """Connects to the postgres database and processes the raw song_data and log_data, inserting them into the database.
+    
+    Returns:
+        None
+    """
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
 
