@@ -22,16 +22,16 @@ python src/etl.py
 
 # Directories in this repository
 
-#### **[/data/](data)** 
+#### **[data/](data)** 
 - Raw JSON data for the songs and logs
 
-#### **[/exercises/](exercises)**
+#### **[exercises/](exercises)**
 - Solutions to Python, SQL and PostgreSQL course exercises.
 
-#### **[/notebooks/](notebooks)** 
+#### **[notebooks/](notebooks)** 
 - Jupyter notebooks used for exploratory data analysis.
 
-#### **[/src/](exercises)**
+#### **[src/](exercises)**
 - Python scripts used to create the database and run the ETL pipeline to extract and parse the data from the song and log JSON files before inserting them into the PostgreSQL database tables.
     
 
