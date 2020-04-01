@@ -3,7 +3,6 @@ import glob
 import psycopg2
 import pandas as pd
 import sys
-sys.path.insert(1, '../src')  # insert at 1; 0 is the script path (or '' in REPL)
 from sql_queries import *
 
 
@@ -27,7 +26,9 @@ def process_song_file(cur, filepath):
     cur.execute(artist_table_insert, artist_data)
 
     # insert song record
-    song_data = df[["song_id", "title", "artist_id", "year", "duration"]].values[0].tolist()
+    song_data = df[
+        ["song_id", "title", "artist_id", "year", "duration"]
+    ].values[0].tolist()
     cur.execute(song_table_insert, song_data)
 
 
@@ -70,8 +71,14 @@ def process_log_file(cur, filepath):
     for _, row in df.iterrows():
         
         # get songid and artistid from song and artist tables
-        results = cur.execute(song_select, (row.song, row.artist, row.length))
-        songid, artistid = results if results else None, None
+        cur.execute(song_select, (row.song, row.artist, row.length))
+        results = cur.fetchone()
+
+        # if results has a value, set the tuple it returns equal to the songid and artistid
+        if results:
+            songid, artistid = results 
+        else:
+            songid, artistid = None, None
 
         # insert songplay record
         songplay_data = (
