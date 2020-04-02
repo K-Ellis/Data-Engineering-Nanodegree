@@ -91,7 +91,7 @@ def process_log_file(cur, filepath):
 
 
 def process_data(cur, conn, filepath, func):
-     """Finds every file in the filepath and processes them with the given func.
+    """Finds every file in the filepath and processes them with the given func.
     
     Args:
         cur (object): the cursor object.
@@ -129,8 +129,8 @@ def main():
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
 
-    process_data(cur, conn, filepath='../data/song_data', func=process_song_file)
-    process_data(cur, conn, filepath='../data/log_data', func=process_log_file)
+    process_data(cur, conn, filepath='data/song_data', func=process_song_file)
+    process_data(cur, conn, filepath='data/log_data', func=process_log_file)
 
     conn.close()
 
