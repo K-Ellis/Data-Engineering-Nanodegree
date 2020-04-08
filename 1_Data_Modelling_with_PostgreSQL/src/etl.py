@@ -91,7 +91,7 @@ def process_log_file(cur, filepath):
 
 
 def process_data(cur, conn, filepath, func):
-     """Finds every file in the filepath and processes them with the given func.
+    """Finds every file in the filepath and processes them with the given func.
     
     Args:
         cur (object): the cursor object.
