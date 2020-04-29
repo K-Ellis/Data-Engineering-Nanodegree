@@ -75,7 +75,7 @@ songplay_table_create = """
         user_id INT REFERENCES user (user_id),
         song_id VARCHAR (20) REFERENCES song (song_id),
         artist_id VARCHAR (20) REFERENCES artist (artist_id),
-        start_time TIMESTAMP REFERENCES time (start_time) SORTKEY,
+        start_time TIMESTAMP REFERENCES time (start_time) SORTKEY DISTKEY,
         PRIMARY KEY (songplay_id)
     )
     ;
@@ -83,7 +83,7 @@ songplay_table_create = """
 
 user_table_create = """
     CREATE TABLE IF NOT EXISTS user (
-        user_id INT,
+        user_id INT SORTKEY,
         first_name VARCHAR (20),
         last_name VARCHAR (20),
         gender VARCHAR (10),
@@ -96,7 +96,7 @@ user_table_create = """
 
 song_table_create = """
     CREATE TABLE IF NOT EXISTS song (
-        song_id	VARCHAR (50),
+        song_id	VARCHAR (50) SORTKEY,
         title	VARCHAR (100) NOT NULL,
         year	INTEGER NOT NULL,
         duration	FLOAT NOT NULL,
@@ -108,7 +108,7 @@ song_table_create = """
 
 artist_table_create = """
     CREATE TABLE IF NOT EXISTS artist (
-        artist_id	VARCHAR (50),
+        artist_id	VARCHAR (50) SORTKEY,
         name	VARCHAR (100) NOT NULL,
         location	VARCHAR (100),
         latitude	FLOAT,
@@ -120,7 +120,7 @@ artist_table_create = """
 
 time_table_create = """
     CREATE TABLE IF NOT EXISTS time (
-        start_time	TIMESTAMP,
+        start_time	TIMESTAMP SORTKEY DISTKEY,
         hour	INTEGER NOT NULL,
         day	    INTEGER NOT NULL,
         week	INTEGER NOT NULL,

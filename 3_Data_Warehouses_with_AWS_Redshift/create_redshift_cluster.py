@@ -16,12 +16,12 @@ def parse_config():
     DWH_NODE_TYPE = config.get("DWH", "DWH_NODE_TYPE")
     DWH_IAM_ROLE_NAME = config.get("DWH", "DWH_IAM_ROLE_NAME")
     DWH_CLUSTER_IDENTIFIER = config.get("DWH", "DWH_CLUSTER_IDENTIFIER")
+    REGION_NAME = config.get("DWH", "REGION_NAME")
 
     DB_NAME = config.get("CLUSTER", "DB_NAME")
     DB_USER = config.get("CLUSTER", "DB_USER")
     DB_PASSWORD = config.get("CLUSTER", "DB_PASSWORD")
     DB_PORT = config.get("CLUSTER", "DB_PORT")
-    REGION_NAME = config.get("CLUSTER", "REGION_NAME")
 
     IAM_ROLE_ARN = config.get("IAM_ROLE", "ARN")
 
