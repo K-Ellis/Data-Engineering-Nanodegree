@@ -8,5 +8,5 @@
 ### [2. NoSQL Data Modelling with Apache Cassandra](2_Data_Modelling_with_Apache_Cassandra)
 - Design and create a noSQL Apache Cassandra database and Python ETL pipeline for Sparkify, a music streaming startup.
 
-### [3. Data Warehouse Modelling with AWS Redshift] (3_Data_Warehouses_with_AWS_Redshift)
+### [3. Data Warehouse Modelling with AWS Redshift](3_Data_Warehouses_with_AWS_Redshift)
 - Use Infrastructure as Code to build and deploy an AWS Redshift Cluster. Use Python to Extract, Transform and Load data from an S3 bucket into the data warehouse.
