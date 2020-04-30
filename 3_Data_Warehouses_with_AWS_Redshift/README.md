@@ -21,6 +21,11 @@ Copy the raw data from the S3 bucket into the staging tables, then transform and
 python etl.py
 ``` 
 
+Test the the data warehouse tables row counts and entries match pre-defined expected values.
+```bash
+python data_test_queries.py
+``` 
+
 Delete the AWS Redshift cluster and destroy the related infrastructure
 ```bash
 python delete_redshift_cluster.py
