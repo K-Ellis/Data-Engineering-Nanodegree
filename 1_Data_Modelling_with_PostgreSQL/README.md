@@ -7,7 +7,7 @@ To address this need, `Python` and `SQL` have been used to Extract, Transform an
 Fact and dimension tables have been designed for a star schema database design with a particular analytic focus for the startup. This star schema database design ensures that data integrity is maintained and data redundency is reduced while allowing analysts to search for and analyse data with joins and aggregations.
 
 
-# Running the python code
+# Running the code
 
 The follwing files must be executed in order to create the database and run the ETL pipeline:
 
@@ -37,6 +37,7 @@ python src/etl.py
 
 
 # Data model
+![Data Model](../3_Data_Warehouses_with_AWS_Redshift/Data_Model.png)
 ### Song Plays table
 - *Type:* Fact table.
 - *Description:* A log table which records each time a user has played a song.
