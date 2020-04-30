@@ -4,7 +4,16 @@ import json
 import time
 
 
-def create_iam_role(iam_client, DWH_IAM_ROLE_NAME):
+def create_or_get_iam_role(iam_client, DWH_IAM_ROLE_NAME):
+    """
+    Create an IAM role, or retreive it if it already exists.
+
+    Args:
+        iam_client,
+        DWH_IAM_ROLE_NAME 
+    Returns:
+        The IAM role
+    """
     try:
         print("Creating a new IAM Role")
         dwhRole = iam_client.create_role(
@@ -31,10 +40,6 @@ def create_iam_role(iam_client, DWH_IAM_ROLE_NAME):
     return dwhRole
 
 
-def get_arn_for_iam_role(iam_client, DWH_IAM_ROLE_NAME):
-    return iam_client.get_role(RoleName=DWH_IAM_ROLE_NAME)["Role"]["Arn"]
-
-
 def create_redshift_cluster(
     redshift_client,
     roleArn,
@@ -46,6 +51,22 @@ def create_redshift_cluster(
     DB_USER,
     DB_PASSWORD,
 ):
+    """
+    Create the Redshift cluster.
+
+    Args:
+        redshift_client
+        roleArn,
+        DWH_CLUSTER_TYPE,
+        DWH_NODE_TYPE,
+        DWH_NUM_NODES,
+        DWH_CLUSTER_IDENTIFIER,
+        DB_NAME,
+        DB_USER,
+        DB_PASSWORD
+    Returns:
+        None
+    """
     try:
         response = redshift_client.create_cluster(
             # HW
@@ -65,16 +86,21 @@ def create_redshift_cluster(
             "Http status code response from Redshift Cluster: ",
             response["ResponseMetadata"]["HTTPStatusCode"],
         )
-        return response["ResponseMetadata"]["HTTPStatusCode"] == 200
     except Exception as e:
         print(e)
-        return False
 
 
 def update_config_file(redshift_client, DWH_CLUSTER_IDENTIFIER, sleep_seconds=60):
     """
     Update config file with the cluster endpoint and IAM ARN values after the cluster has become available.
-    This can take 5+ minutes.
+    It can take 5+ minutes for the cluster to spin up and become available.
+
+    Args:
+        redshift_client, 
+        DWH_CLUSTER_IDENTIFIER, 
+        sleep_seconds
+    Returns:
+        None
     """
 
     print(f"Checking every {sleep_seconds} seconds for cluster to be available")
@@ -96,20 +122,21 @@ def update_config_file(redshift_client, DWH_CLUSTER_IDENTIFIER, sleep_seconds=60
 
     DWH_ENDPOINT = myClusterProps["Endpoint"]["Address"]
     DWH_ROLE_ARN = myClusterProps["IamRoles"][0]["IamRoleArn"]
-
     print("DWH_ENDPOINT = ", DWH_ENDPOINT)
     print("DWH_ROLE_ARN = ", DWH_ROLE_ARN)
 
     print("Writing cluster endpoint and IAM role ARN to dwh.cfg")
-
     config = configparser.ConfigParser()
 
+    # Read in the current config file
     with open("dwh.cfg") as f:
         config.read_file(f)
 
+    # Update the HOST and ARN values
     config.set("CLUSTER", "HOST", myClusterProps["Endpoint"]["Address"])
     config.set("IAM_ROLE", "ARN", myClusterProps["IamRoles"][0]["IamRoleArn"])
 
+    # Write out the new config file
     with open("dwh.cfg", "w+") as f:
         config.write(f)
 
@@ -148,18 +175,20 @@ def main():
     )
 
     # Create an IAM Role that makes Redshift able to access S3 bucket (ReadOnly)
-    create_iam_role(iam, DWH_IAM_ROLE_NAME)
+    create_or_get_iam_role(iam, DWH_IAM_ROLE_NAME)
 
-    print("Attaching S3 read only access policy to IAM role")
+    # Attach S3 read only access policy to IAM role
     response = iam.attach_role_policy(
         RoleName=DWH_IAM_ROLE_NAME,
         PolicyArn="arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
     )["ResponseMetadata"]["HTTPStatusCode"]
     print(response)
 
-    roleArn = get_arn_for_iam_role(iam, DWH_IAM_ROLE_NAME)
+    # Get ARN for iam role
+    roleArn = iam.get_role(RoleName=DWH_IAM_ROLE_NAME)["Role"]["Arn"]
     print("roleArn:", roleArn)
 
+    # Create the cluster
     create_redshift_cluster(
         redshift,
         roleArn,
@@ -172,13 +201,14 @@ def main():
         DB_PASSWORD,
     )
 
-    update_config_file(redshift, DWH_CLUSTER_IDENTIFIER, sleep_seconds=60)
+    # Wait for the cluster to spin up and update the config file HOST and ARN values
+    update_config_file(redshift, DWH_CLUSTER_IDENTIFIER, sleep_seconds=30)
 
 
 if __name__ == "__main__":
     import sys
     import os
 
-    os.chdir(sys.path[0])
+    os.chdir(sys.path[0])  # Change path to that of this python file
 
     main()

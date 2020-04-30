@@ -4,12 +4,30 @@ from sql_queries import create_table_queries, drop_table_queries
 
 
 def drop_tables(cur, conn):
+    """
+    Drop all of the Redshift tables if they exist.
+
+    Args:
+        cur, 
+        conn
+    Returns:
+        None
+    """
     for query in drop_table_queries:
         cur.execute(query)
         conn.commit()
 
 
 def create_tables(cur, conn):
+    """
+    Create all of the Redshift tables if they do not exist.
+
+    Args:
+        cur, 
+        conn
+    Returns:
+        None
+    """
     for query in create_table_queries:
         cur.execute(query)
         conn.commit()

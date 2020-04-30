@@ -1,30 +1,20 @@
-import boto3
-from create_redshift_cluster import parse_config
-
 if __name__ == "__main__":
+    import boto3
+    import configparser
     import sys
     import os
     import time
 
     os.chdir(sys.path[0])
-    (
-        KEY,
-        SECRET,
-        DWH_CLUSTER_TYPE,
-        DWH_NUM_NODES,
-        DWH_NODE_TYPE,
-        DWH_IAM_ROLE_NAME,
-        DWH_CLUSTER_IDENTIFIER,
-        DB_NAME,
-        DB_USER,
-        DB_PASSWORD,
-        DB_PORT,
-        REGION_NAME,
-        IAM_ROLE_ARN,
-        S3_LOG_DATA,
-        S3_LOG_JSONPATH,
-        S3_SONG_DATA,
-    ) = parse_config()
+
+    config = configparser.ConfigParser()
+    config.read("dwh.cfg")
+
+    KEY = config.get("AWS", "KEY")
+    SECRET = config.get("AWS", "SECRET")
+    DWH_IAM_ROLE_NAME = config.get("DWH", "DWH_IAM_ROLE_NAME")
+    DWH_CLUSTER_IDENTIFIER = config.get("DWH", "DWH_CLUSTER_IDENTIFIER")
+    REGION_NAME = config.get("DWH", "REGION_NAME")
 
     redshift = boto3.client(
         "redshift",
@@ -49,7 +39,7 @@ if __name__ == "__main__":
         while myClusterProps["ClusterStatus"] == "deleting":
             print(f"\t{i},\t{myClusterProps['ClusterStatus']}")
             i += 1
-            time.sleep(15)
+            time.sleep(30)
             myClusterProps = redshift.describe_clusters(
                 ClusterIdentifier=DWH_CLUSTER_IDENTIFIER
             )["Clusters"][0]
