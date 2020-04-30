@@ -149,7 +149,8 @@ staging_songs_copy = f"""
     FROM '{S3_SONG_DATA}'
     IAM_ROLE '{IAM_ROLE_ARN}'
     REGION 'us-west-2'
-    JSON 'auto'
+    FORMAT AS JSON 'auto' 
+    TRUNCATECOLUMNS
     ;
 """
 
@@ -235,7 +236,7 @@ artist_table_insert = """
         artist_name,
         artist_location,
         artist_latitude,
-        artist_longitude,
+        artist_longitude
     FROM staging_songs
     WHERE artist_id IS NOT NULL
     ;
@@ -252,15 +253,14 @@ time_table_insert = """
         weekday
     )
     SELECT DISTINCT
-        ts,
-        EXTRACT (hour from ts),
-        EXTRACT (day from ts),
-        EXTRACT (week from ts),
-        EXTRACT (month from ts),
-        EXTRACT (year from ts),
-        EXTRACT (weekday from ts),
-    FROM staging_events
-    WHERE page = 'NextSong'
+        start_time,
+        EXTRACT (hour from start_time),
+        EXTRACT (day from start_time),
+        EXTRACT (week from start_time),
+        EXTRACT (month from start_time),
+        EXTRACT (year from start_time),
+        EXTRACT (weekday from start_time)
+    FROM songplay
     ;
 """
 
@@ -287,8 +287,8 @@ drop_table_queries = [
 copy_table_queries = [staging_events_copy, staging_songs_copy]
 insert_table_queries = [
     user_table_insert,
-    time_table_insert,
     artist_table_insert,
     song_table_insert,
     songplay_table_insert,
+    time_table_insert,
 ]

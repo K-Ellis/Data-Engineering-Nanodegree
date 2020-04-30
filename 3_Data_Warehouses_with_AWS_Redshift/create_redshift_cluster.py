@@ -4,51 +4,6 @@ import json
 import time
 
 
-def parse_config():
-    config = configparser.ConfigParser()
-    config.read("dwh.cfg")
-
-    KEY = config.get("AWS", "KEY")
-    SECRET = config.get("AWS", "SECRET")
-
-    DWH_CLUSTER_TYPE = config.get("DWH", "DWH_CLUSTER_TYPE")
-    DWH_NUM_NODES = config.get("DWH", "DWH_NUM_NODES")
-    DWH_NODE_TYPE = config.get("DWH", "DWH_NODE_TYPE")
-    DWH_IAM_ROLE_NAME = config.get("DWH", "DWH_IAM_ROLE_NAME")
-    DWH_CLUSTER_IDENTIFIER = config.get("DWH", "DWH_CLUSTER_IDENTIFIER")
-    REGION_NAME = config.get("DWH", "REGION_NAME")
-
-    DB_NAME = config.get("CLUSTER", "DB_NAME")
-    DB_USER = config.get("CLUSTER", "DB_USER")
-    DB_PASSWORD = config.get("CLUSTER", "DB_PASSWORD")
-    DB_PORT = config.get("CLUSTER", "DB_PORT")
-
-    IAM_ROLE_ARN = config.get("IAM_ROLE", "ARN")
-
-    S3_LOG_DATA = config.get("S3", "LOG_DATA")
-    S3_LOG_JSONPATH = config.get("S3", "LOG_JSONPATH")
-    S3_SONG_DATA = config.get("S3", "SONG_DATA")
-
-    return (
-        KEY,
-        SECRET,
-        DWH_CLUSTER_TYPE,
-        DWH_NUM_NODES,
-        DWH_NODE_TYPE,
-        DWH_IAM_ROLE_NAME,
-        DWH_CLUSTER_IDENTIFIER,
-        DB_NAME,
-        DB_USER,
-        DB_PASSWORD,
-        DB_PORT,
-        REGION_NAME,
-        IAM_ROLE_ARN,
-        S3_LOG_DATA,
-        S3_LOG_JSONPATH,
-        S3_SONG_DATA,
-    )
-
-
 def create_iam_role(iam_client, DWH_IAM_ROLE_NAME):
     try:
         print("Creating a new IAM Role")
@@ -161,24 +116,22 @@ def update_config_file(redshift_client, DWH_CLUSTER_IDENTIFIER, sleep_seconds=60
 
 def main():
     # Parse config file
-    (
-        KEY,
-        SECRET,
-        DWH_CLUSTER_TYPE,
-        DWH_NUM_NODES,
-        DWH_NODE_TYPE,
-        DWH_IAM_ROLE_NAME,
-        DWH_CLUSTER_IDENTIFIER,
-        DB_NAME,
-        DB_USER,
-        DB_PASSWORD,
-        DB_PORT,
-        REGION_NAME,
-        IAM_ROLE_ARN,
-        S3_LOG_DATA,
-        S3_LOG_JSONPATH,
-        S3_SONG_DATA,
-    ) = parse_config()
+    config = configparser.ConfigParser()
+    config.read("dwh.cfg")
+
+    KEY = config.get("AWS", "KEY")
+    SECRET = config.get("AWS", "SECRET")
+
+    DWH_CLUSTER_TYPE = config.get("DWH", "DWH_CLUSTER_TYPE")
+    DWH_NUM_NODES = config.get("DWH", "DWH_NUM_NODES")
+    DWH_NODE_TYPE = config.get("DWH", "DWH_NODE_TYPE")
+    DWH_IAM_ROLE_NAME = config.get("DWH", "DWH_IAM_ROLE_NAME")
+    DWH_CLUSTER_IDENTIFIER = config.get("DWH", "DWH_CLUSTER_IDENTIFIER")
+    REGION_NAME = config.get("DWH", "REGION_NAME")
+
+    DB_NAME = config.get("CLUSTER", "DB_NAME")
+    DB_USER = config.get("CLUSTER", "DB_USER")
+    DB_PASSWORD = config.get("CLUSTER", "DB_PASSWORD")
 
     # Create clients for IAM role and Redshift
     iam = boto3.client(
