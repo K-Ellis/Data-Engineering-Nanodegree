@@ -72,10 +72,10 @@ songplay_table_create = """
         location VARCHAR ,
         user_agent VARCHAR ,
         session_id INT,
-        user_id INT REFERENCES users (user_id),
-        song_id VARCHAR  REFERENCES song (song_id),
-        artist_id VARCHAR  REFERENCES artist (artist_id),
-        start_time TIMESTAMP REFERENCES time (start_time) SORTKEY DISTKEY,
+        user_id INT REFERENCES users (user_id) NOT NULL,
+        song_id VARCHAR  REFERENCES song (song_id) NOT NULL,
+        artist_id VARCHAR  REFERENCES artist (artist_id) NOT NULL,
+        start_time TIMESTAMP REFERENCES time (start_time) SORTKEY DISTKEY NOT NULL,
         PRIMARY KEY (songplay_id)
     )
     ;
@@ -100,7 +100,7 @@ song_table_create = """
         title	VARCHAR  NOT NULL,
         year	INTEGER NOT NULL,
         duration	FLOAT NOT NULL,
-        artist_id	VARCHAR  NOT NULL REFERENCES artist (artist_id),
+        artist_id	VARCHAR  NOT NULL REFERENCES artist (artist_id) NOT NULL,
         PRIMARY KEY (song_id)
     )
     ;
