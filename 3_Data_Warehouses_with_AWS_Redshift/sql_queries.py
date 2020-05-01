@@ -100,7 +100,7 @@ song_table_create = """
         title	VARCHAR  NOT NULL,
         year	INTEGER NOT NULL,
         duration	FLOAT NOT NULL,
-        artist_id	VARCHAR  NOT NULL REFERENCES artist (artist_id) NOT NULL,
+        artist_id	VARCHAR  NOT NULL REFERENCES artist (artist_id),
         PRIMARY KEY (song_id)
     )
     ;
