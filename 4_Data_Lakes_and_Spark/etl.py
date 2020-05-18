@@ -55,6 +55,7 @@ def process_song_data(spark, input_data, output_data):
     )
 
     print("\t...processed songs table")
+    print(songs_table.printSchema())
 
     # extract columns to create artists table
     artists_table = df.select(
@@ -69,6 +70,7 @@ def process_song_data(spark, input_data, output_data):
     artists_table.write.mode("overwrite").parquet(f"{output_data}artists.parquet")
 
     print("\t...processed artists table")
+    print(artists_table.printSchema())
 
 
 def process_log_data(spark, input_data, output_data):
@@ -102,6 +104,7 @@ def process_log_data(spark, input_data, output_data):
     users_table.write.mode("overwrite").parquet(f"{output_data}users.parquet")
 
     print("\t...processed users table")
+    print(users_table.printSchema())
 
     # create timestamp column from original timestamp column
     df = df.withColumn("timestamp", to_timestamp(from_unixtime(col("ts") / 1000)))
@@ -125,6 +128,7 @@ def process_log_data(spark, input_data, output_data):
     )
 
     print("\t...processed time table")
+    print(time_table.printSchema())
 
     # read in song data to use for songplays table
     song_df = spark.read.parquet(f"{output_data}songs.parquet").select(
@@ -157,7 +161,7 @@ def process_log_data(spark, input_data, output_data):
     )
 
     print("\t...processed songplays table")
-
+    print(songplays_table.printSchema())
 
 def main():
     import os
@@ -172,6 +176,7 @@ def main():
     ).getOrCreate()
 
     input_data = "s3a://udacity-dend/"  # for local use "data/"
+    input_data = "data/"
     output_data = "data/output/"
 
     process_song_data(spark, input_data, output_data)
