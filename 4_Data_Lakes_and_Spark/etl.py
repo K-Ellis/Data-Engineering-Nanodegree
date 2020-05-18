@@ -25,14 +25,17 @@ os.environ["AWS_ACCESS_KEY_ID"] = config["AWS"]["AWS_ACCESS_KEY_ID"]
 os.environ["AWS_SECRET_ACCESS_KEY"] = config["AWS"]["AWS_SECRET_ACCESS_KEY"]
 
 
-def create_spark_session():
-    spark = SparkSession.builder.config(
-        "spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0"
-    ).getOrCreate()
-    return spark
-
-
 def process_song_data(spark, input_data, output_data):
+    """
+    Process the song input data into the songs and artists tables.
+    
+    Args:
+        spark, 
+        input_data, 
+        output_data
+    Returns:
+        None
+    """
     print("\n...processing song data:")
 
     # get filepath to song data file
@@ -69,6 +72,16 @@ def process_song_data(spark, input_data, output_data):
 
 
 def process_log_data(spark, input_data, output_data):
+    """
+    Process the log file input data into the users, time and songplays tables.
+    
+    Args:
+        spark, 
+        input_data, 
+        output_data
+    Returns:
+        None
+    """
     print("\n...processing log data:")
 
     # get filepath to log data file
@@ -128,7 +141,7 @@ def process_log_data(spark, input_data, output_data):
         col("userAgent").alias("user_agent"),
         col("UserId").alias("user_id"),
         col("timestamp").alias("start_time"),
-    )
+    ).distinct()
 
     songplays_table = (
         songplays_table.join(song_df, ["title", "artist_name"], "inner",)
@@ -153,11 +166,12 @@ def main():
     dname = os.path.dirname(abspath)
     os.chdir(dname)
 
-    spark = create_spark_session()
-    
-    input_data = "s3a://udacity-dend/"
-    # input_data = "data/"
+    # create spark session
+    spark = SparkSession.builder.config(
+        "spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0"
+    ).getOrCreate()
 
+    input_data = "s3a://udacity-dend/"  # for local use "data/"
     output_data = "data/output/"
 
     process_song_data(spark, input_data, output_data)
