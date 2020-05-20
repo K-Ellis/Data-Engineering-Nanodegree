@@ -14,7 +14,7 @@ python etl.py
 # Data Lake Schema
 The Amazon S3 Data Lake is comprised of the following partitioned parquet tables:
 
-Songs table 
+### Songs table 
 - partitioned by year and artist_id
 ```
 root
@@ -26,7 +26,7 @@ root
  |-- duration: double (nullable = true)
 ```
 
-Artists table                                              
+### Artists table                                              
 ```
 root
  |-- artist_id: string (nullable = true)
@@ -36,7 +36,7 @@ root
  |-- artist_latitude: double (nullable = true)
 ```
 
-Users table                                           
+### Users table                                           
 ```
 root
  |-- userId: string (nullable = true)
@@ -46,7 +46,7 @@ root
  |-- level: string (nullable = true)
 ```
 
-Time table 
+### Time table 
 - partitioned by year and month
 ```
 root
@@ -60,7 +60,7 @@ root
  |-- year: integer (nullable = true)
 ```
 
-Songplays table 
+### Songplays table 
 - partitioned by year and month
 ```root
  |-- title: string (nullable = true)
