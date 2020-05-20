@@ -41,6 +41,7 @@ def process_song_data(spark, input_data, output_data):
     # get filepath to song data file
     song_data = f"{input_data}song_data/*/*/*"
 
+    print("\t...reading song data")
     # read song data file
     df = spark.read.json(song_data)
 
@@ -49,6 +50,7 @@ def process_song_data(spark, input_data, output_data):
         "song_id", "title", "artist_id", "artist_name", "year", "duration"
     ).distinct()
 
+    print("\t...writing song table")
     # write songs table to parquet files partitioned by year and artist
     songs_table.write.partitionBy("year", "artist_id").mode("overwrite").parquet(
         f"{output_data}songs.parquet"
@@ -66,6 +68,7 @@ def process_song_data(spark, input_data, output_data):
         "artist_latitude",
     ).distinct()
 
+    print("\t...writing artists table")
     # write artists table to parquet files
     artists_table.write.mode("overwrite").parquet(f"{output_data}artists.parquet")
 
@@ -91,6 +94,7 @@ def process_log_data(spark, input_data, output_data):
 
     # read log data file
     df = spark.read.json(log_data)
+    print("\t...log data read")
 
     # filter by actions for song plays
     df = df.where(col("page") == "NextSong")
@@ -100,6 +104,7 @@ def process_log_data(spark, input_data, output_data):
         "userId", "firstName", "lastName", "gender", "level"
     ).distinct()
 
+    print("\t...writing users table")
     # write users table to parquet files
     users_table.write.mode("overwrite").parquet(f"{output_data}users.parquet")
 
@@ -122,6 +127,7 @@ def process_log_data(spark, input_data, output_data):
         .distinct()
     )
 
+    print("\t...writing partitioned time parquet files")
     # write time table to parquet files partitioned by year and month
     time_table.write.partitionBy("year", "month").parquet(
         f"{output_data}time.parquet", mode="overwrite"
@@ -130,6 +136,7 @@ def process_log_data(spark, input_data, output_data):
     print("\t...processed time table")
     print(time_table.printSchema())
 
+    print("\t...reading song parquet files")
     # read in song data to use for songplays table
     song_df = spark.read.parquet(f"{output_data}songs.parquet").select(
         "song_id", "title", "artist_id", "artist_name"
@@ -163,7 +170,9 @@ def process_log_data(spark, input_data, output_data):
     print("\t...processed songplays table")
     print(songplays_table.printSchema())
 
+
 def main():
+    # Change dir to path of current file
     import os
 
     abspath = os.path.abspath(__file__)
@@ -172,12 +181,19 @@ def main():
 
     # create spark session
     spark = SparkSession.builder.config(
-        "spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0"
+        "spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.3"
     ).getOrCreate()
 
-    input_data = "s3a://udacity-dend/"  # for local use "data/"
-    input_data = "data/"
-    output_data = "data/output/"
+    # For v4 AWS S3 Bucket, e.g. Frankfurt
+    # spark.sparkContext.setSystemProperty("com.amazonaws.services.s3.enableV4", "true")
+    # spark.sparkContext._jsc.hadoopConfiguration().set("fs.s3a.endpoint", "s3.eu-central-1.amazonaws.com")
+
+    input_data = "s3a://udacity-dend/"  # Udacity's S3 bucket
+    # input_data = "s3a://dend-sparkify-etl/"  # Private S3 bucket
+    # input_data = "data/"   # Local files
+
+    output_data = "s3a://dend-sparkify-etl/"  # Private S3 bucket
+    # output_data = "data/output/"  # Local files
 
     process_song_data(spark, input_data, output_data)
     process_log_data(spark, input_data, output_data)
