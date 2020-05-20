@@ -12,4 +12,4 @@
 - Use Infrastructure as Code to build and deploy an AWS Redshift Cluster. Use Python to Extract, Transform and Load data from an S3 bucket into the data warehouse.
 
 ### [4. Data Lakes with AWS S3 and Apache Spark](4_Data_Lakes_and_Spark)
-- Use PySpark to extract raw data from one AWS S3 Bucket before transforming it into a processed format and loading it into an AWS S3 Data Lake.
+- Use PySpark to extract raw data from one AWS S3 Bucket before transforming it into a star schema data model of dimension and fact tables and loading these into an AWS S3 Data Lake in parquet format.
