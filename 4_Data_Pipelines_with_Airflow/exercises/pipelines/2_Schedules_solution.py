@@ -12,7 +12,8 @@ def hello_world():
 dag = DAG(
         "lesson1.solution2",
         start_date=datetime.datetime.now() - datetime.timedelta(days=2),
-        schedule_interval='@daily')
+        schedule_interval='@daily'  # Add a daily `schedule_interval` argument to the following DAG
+        )  
 
 task = PythonOperator(
         task_id="hello_world_task",
